@@ -9,3 +9,6 @@ Current capabilities:
 
 _Version 0.1_
 - Added function creating data directly in the programm for further use
+
+_Version 0.2_
+- Added function saving data in one .csv, .txt or .pkl file
