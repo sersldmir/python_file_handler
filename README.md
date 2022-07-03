@@ -6,3 +6,6 @@ Current capabilities:
 - pickling and unpickling files
 - working with text files
 - creating data on the go
+
+_Version 0.1_
+- Added function creating data directly in the programm for further use
