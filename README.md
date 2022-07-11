@@ -14,3 +14,9 @@ _Version 0.1_
 
 _Version 0.2_
 - Added function saving data in one .csv, .txt or .pkl file
+
+_Version 0.3_
+- Changed data class: deleted rows and colums attributes in order to do everything with Pandas
+- Changed saving data function: better implementation of Pandas to save text files
+- Added parameter "max-rows" to saving data function: to split data into several files when saving
+- Changed data builder: added optional parameter "contents" that allows to create objects of the custom data class with a ready list of lists 
