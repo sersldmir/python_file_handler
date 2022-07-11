@@ -9,14 +9,11 @@ import pandas as pd
 import numpy as np
 from time import sleep
 
-# Custom class to work with data
+# custom data class
 class My_data_class(object):
     def __init__(self, data, name):
-        self.rows=data
-        self.columns=[[data[j][i] for j in range(len(data))] for i in range(len(data[0]))]
         self.main_data=pd.DataFrame({k: v for k,v in zip(data[0],[[data[j][i] for j in range(1,len(data))] for i in range(len(data[0]))])})
         self.name=name
-
 
     def __repr__(self):
         return self.main_data.to_string(index=False)
@@ -25,42 +22,46 @@ class My_data_class(object):
     @staticmethod
     def regular_save(data, format, file_name):
         try:
-            if format == 'csv':
-                data.to_csv(file_name +'.csv', index = False)
-                print(f'Data successfully saved in csv file under the name: {file_name + ".csv"}!')
-            if format == 'pickle':
-                data.to_pickle(file_name +'.pkl')
-                print(f'Data successfully pickled under the name: {file_name + ".pkl"}!')
-        except OSError:
-            raise ValueError('Invalid file name!')
-
-    # method for saving data in .txt
-    @staticmethod
-    def regular_txt_save(data, file_name):
-        try:
-            with open(file_name, mode='w') as file:
-                for line in data:
-                    file.write('\t'.join([str(i) for i in line])+'\n')
-            print(f'Data successfully saved in txt under the name {file_name+".txt"}!')
+                if format == 'csv':
+                        data.to_csv(file_name +'.csv', index = False)
+                        print(f'Data successfully saved in csv file under the name: {file_name + ".csv"}!')
+                if format == 'pickle':
+                        data.to_pickle(file_name +'.pkl')
+                        print(f'Data successfully pickled under the name: {file_name + ".pkl"}!')
+                if format == 'txt':
+                        with open(file_name+'.txt', mode='w') as file:
+                                str_dt = data.to_string(index=False)
+                                file.write(str_dt)
+                        print(f'Data successfully saved in txt under the name {file_name+".txt"}!')
         except OSError:
             raise ValueError('Invalid file name!')
     
+    # main save function
     def save_table(self, format='csv', max_rows=0):
         if max_rows < 0:
             max_rows = 0
-        elif max_rows == 0:
-            if format != 'txt':
+        elif max_rows == 0 or max_rows == len(self.main_data):
                 My_data_class.regular_save(self.main_data, format, self.name)
-            else:
-                My_data_class.regular_txt_save(self.rows, self.name)
         else:
-            ...
+            amount_of_files = len(self.main_data) // max_rows
+            if amount_of_files < len(self.main_data) / max_rows:
+                amount_of_files+=1
+            beginnig_of_the_slice, end_of_the_slice, file_num = 0, max_rows, 1
+            for i in range(1, amount_of_files+1):
+                My_data_class.regular_save(self.main_data[beginnig_of_the_slice:end_of_the_slice], format, self.name+f'-{file_num}')
+                beginnig_of_the_slice+=max_rows
+                end_of_the_slice+=max_rows
+                file_num+=1
         
     
 
-# creation of data from the programm itself
-def data_builder():
+# creation of data from the programm itself or composing it from list of lists
+def data_builder(contents=None):
     data = []
+    if contents is not None:
+        data_name= input('Input the name of the data without format:\n')
+        data = contents
+        return My_data_class(data, data_name)
     while True:
         try:
             titles=input("Input the titles' names with space as separators\n")
@@ -96,3 +97,15 @@ def data_builder():
 # test2.save_table('csv', 0)
 # test2.save_table('pickle', 0)
 # test2.save_table('txt', 0)
+
+exp_lst=[['Name', 'Age', 'Gender'],
+        ['Ann', 98, 'Female'],
+        ['Joe', 76, 'Male'],
+        ['Cunt', None, 'Helicopter'],
+        ['Damien', 67, 'Male'],
+        ['Lisa', 66, 'Female']]
+
+exp_df = data_builder(exp_lst)
+print(exp_df)
+exp_df.save_table(max_rows=5)
+exp_df.save_table('txt')
