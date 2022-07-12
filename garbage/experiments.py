@@ -2,12 +2,14 @@ import numpy as np
 import pandas as pd
 from time import sleep
 
-exp_lst=[['Name', 'Age', 'Gender'],
-        ['Ann', 98, 'Female'],
-        ['Joe', 76, 'Male'],
-        ['Cunt', None, 'Helicopter'],
-        ['Damien', 67, 'Male'],
-        ['Lisa', 66, 'Female']]
+exp_lst=[['Name', 'Age', 'Gender', 'Money'],
+        ['Ann', 98, 'Female', 456],
+        ['Joe', 76, 'Male', 111],
+        ]
+exp_lst1=[['Name', 'Age', 'Gender', 'Money'],
+        ['Cunt', None, 'Helicopter', 321],
+        ['Damien', 67, 'Male', 908],
+        ['Lisa', 66, 'Female', 780]]
 
 # exp_df=pd.DataFrame({k: v for k,v in zip(exp_lst[0],[[exp_lst[j][i] for j in range(1,len(exp_lst))] for i in range(len(exp_lst[0]))])})
 # print(exp_df)
@@ -27,6 +29,33 @@ exp_lst=[['Name', 'Age', 'Gender'],
 # #         tr.append(exp_lst[j][i])
 # #     list_of_lists.append(tr)
 # print(list_of_lists)
-# exp_data=pandas.DataFrame({k: v for k,v in zip(exp_lst[0],[[exp_lst[j][i] for j in range(1,len(exp_lst))] for i in range(len(exp_lst[0]))])})
-# print(exp_data.to_string(index=False))
 
+
+# ser=exp_data.loc[:, 'Age'] < exp_data.loc[:, 'Money']
+# print(ser.to_string(index=False))
+
+# with open('test_data.txt', mode = 'r') as file:
+#         data=file.read().split('\n')
+#         data_1=[i.split() for i in data]
+# print(data_1)
+# exp_1=pd.DataFrame({k: v for k,v in zip(data_1[0],[[exp_lst[j][i] for j in range(1,len(data_1))] for i in range(len(data_1[0]))])})
+# print(exp_1)
+# exp_1['Mul_age']=exp_1['Age']*3
+# print(exp_1)
+# exp_1['Mul_name']=exp_1['Name']*2
+# print(exp_1)
+
+# def exp_func(*args):
+#         return len(args)
+
+# print(exp_func(3.4, 'eew', 42, 0))
+
+a=[9]
+for i,v in enumerate(a):
+        print(i,v, sep='-')
+print(i)
+
+# exp_data=pd.DataFrame({k: v for k,v in zip(exp_lst[0],[[exp_lst[j][i] for j in range(1,len(exp_lst))] for i in range(len(exp_lst[0]))])})
+# exp_data1=pd.DataFrame({k: v for k,v in zip(exp_lst1[0],[[exp_lst1[j][i] for j in range(1,len(exp_lst1))] for i in range(len(exp_lst1[0]))])})
+# exp_con=pd.concat(exp_data1, ignore_index=True)
+# print(exp_con)
