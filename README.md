@@ -20,3 +20,7 @@ _Version 0.3_
 - Changed saving data function: better implementation of Pandas to save text files
 - Added parameter "max-rows" to saving data function: to split data into several files when saving
 - Changed data builder: added optional parameter "contents" that allows to create objects of the custom data class with a ready list of lists 
+
+_Version 0.4_
+- Added loading function with unlimited amount of single type files loading
+- Added some documentation
