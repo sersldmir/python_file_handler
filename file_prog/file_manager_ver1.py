@@ -4,7 +4,6 @@ Capabilities:
 - pickling and unpickling files
 - working with text files'''
 
-from unittest import result
 import pandas as pd
 import numpy as np
 from time import sleep
