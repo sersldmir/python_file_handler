@@ -4,22 +4,82 @@ Capabilities:
 - pickling and unpickling files
 - working with text files'''
 
-# import csv, pickle
+from unittest import result
 import pandas as pd
 import numpy as np
 from time import sleep
 
-# custom data class
 class My_data_class(object):
+    """Custom data class to work with data"""
     def __init__(self, data, name, type_data = 'list_of_lists'):
+        """Constructor. Receives either a list of lists or a DataFrame and its name
+        taken from a user. Type_data parameter corresponds with the type of data received"""
         if type_data == 'list_of_lists':
             self.main_data=pd.DataFrame({k: v for k,v in zip(data[0],[[data[j][i] for j in range(1,len(data))] for i in range(len(data[0]))])})
         elif type_data == 'data_frame':
             self.main_data=data
         self.name=name
 
+    def change_name(self, new_name):
+        """Method that allows to change the name of your data"""
+        assert type(new_name) == str, 'Name must be a string!'
+        self.name = new_name
+
     def __repr__(self):
+        """Printing method. Outputs DataFrame without indexes"""
         return self.main_data.to_string(index=False)
+
+    def get_rows_by_number(self, start, end=0, alter_table=False):
+        """Method for choosing rows the indexes of which are in range start:stop.
+        Alter_table parameter allows the user to alter their current data or save results in a separate file"""
+        assert 0 < start < len(self.main_data) and ((start <= end <= len(self.main_data)) or end==0), 'Wrong boundaries!'
+        result=self.main_data.iloc[start-1:] if end == 0 else self.main_data.iloc[start:end+1]
+        if alter_table==True:
+            print('The data has been altered!!!')
+            self.main_data = result
+            print(self)
+        if alter_table==False:
+            # ask in a main program whether to save or not
+            return result
+            
+
+    def get_rows_by_value(self, *values, alter_table=False):
+        """Method for choosing rows the first values of which are *values.
+        Alter_table parameter allows the user to alter their current data or save results in a separate file"""
+        result=self.main_data.loc[self.main_data[self.main_data.columns[0]].isin(values)]
+        if alter_table==True and not result.empty:
+            print('The data has been altered!!!')
+            self.main_data = result 
+            print(self)
+        if alter_table==False and not result.empty:
+            # ask in a main program whether to save or not
+            return result
+        if result.empty:
+            raise ValueError('Such values are not found!')
+    
+    def get_values(self, column):
+        ...
+    def set_values(self, column, *values):
+        ...
+    def add_line(self, value_string):
+        ...
+    def del_line(self, shoot_number):
+        ...
+    def merge(self, another_table=None):
+        ...
+    def concat(self, another_table=None):
+        ...
+    def split(self, splitter=None):
+        ...
+    def compare(self, column_1, column_2, symbol):
+        def filter(table, bool_list, alter_table=False):
+            ...
+        ...
+    def column_math(self, column_1, column_2, symbol, alter_table=False):
+        ...
+
+
+
 
     @staticmethod
     def regular_save(data, format, file_name):
@@ -156,11 +216,11 @@ def load_existing_data(*file_names, format='csv'):
 # exp_df.save_table('txt')
 # exp_df.save_table('pickle')
 
-exp_pickle_data=load_existing_data('test_data.pkl', format='pickle')
-exp_txt_data=load_existing_data('test_data.txt', format='txt')
-exp_csv_data=load_existing_data('test_data-1.csv', 'test_data-2.csv', 'test_data-3.csv')
-print(exp_pickle_data)
-print('\n'*2)
-print(exp_txt_data)
-print('\n'*2)
-print(exp_csv_data)
+# exp_pickle_data=load_existing_data('test_data.pkl', format='pickle')
+# exp_txt_data=load_existing_data('test_data.txt', format='txt')
+# exp_csv_data=load_existing_data('test_data-1.csv', 'test_data-2.csv', 'test_data-3.csv')
+# print(exp_pickle_data)
+# print('\n'*2)
+# print(exp_txt_data)
+# print('\n'*2)
+# print(exp_csv_data)

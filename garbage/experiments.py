@@ -5,13 +5,21 @@ from time import sleep
 exp_lst=[['Name', 'Age', 'Gender', 'Money'],
         ['Ann', 98, 'Female', 456],
         ['Joe', 76, 'Male', 111],
-        ]
-exp_lst1=[['Name', 'Age', 'Gender', 'Money'],
-        ['Cunt', None, 'Helicopter', 321],
+        ['Cunt', None, 'Helicopter', np.NaN],
         ['Damien', 67, 'Male', 908],
-        ['Lisa', 66, 'Female', 780]]
+        ['Lisa', 66, 'Female', 780]
+        ]
 
-# exp_df=pd.DataFrame({k: v for k,v in zip(exp_lst[0],[[exp_lst[j][i] for j in range(1,len(exp_lst))] for i in range(len(exp_lst[0]))])})
+exp_df=pd.DataFrame({k: v for k,v in zip(exp_lst[0],[[exp_lst[j][i] for j in range(1,len(exp_lst))] for i in range(len(exp_lst[0]))])})
+print(exp_df)
+# print('\n\nConditional selection\n')
+# print(exp_df.loc[exp_df['Gender']=='Female'])
+values=['Joe', 'Ann', 'Cunt']
+print(len(exp_df))
+# print(exp_df.loc[])
+res=exp_df.loc[exp_df[exp_df.columns[0]].isin(values)]
+print('Empty' if res.empty else res)
+
 # print(exp_df)
 # print()
 # # exp1, exp2, exp3 = exp_df.iloc[0], exp_df.iloc[1], exp_df.iloc[2]
@@ -50,12 +58,13 @@ exp_lst1=[['Name', 'Age', 'Gender', 'Money'],
 
 # print(exp_func(3.4, 'eew', 42, 0))
 
-a=[9]
-for i,v in enumerate(a):
-        print(i,v, sep='-')
-print(i)
+# a=[9]
+# for i,v in enumerate(a):
+#         print(i,v, sep='-')
+# print(i)
 
 # exp_data=pd.DataFrame({k: v for k,v in zip(exp_lst[0],[[exp_lst[j][i] for j in range(1,len(exp_lst))] for i in range(len(exp_lst[0]))])})
 # exp_data1=pd.DataFrame({k: v for k,v in zip(exp_lst1[0],[[exp_lst1[j][i] for j in range(1,len(exp_lst1))] for i in range(len(exp_lst1[0]))])})
 # exp_con=pd.concat(exp_data1, ignore_index=True)
 # print(exp_con)
+
