@@ -4,22 +4,25 @@ Capabilities:
 - pickling and unpickling files
 - working with text files'''
 
+from typing import Union
+from __future__ import annotations
 import pandas as pd
 import numpy as np
 from time import sleep
 
 class My_data_class(object):
     """Custom data class to work with data"""
-    def __init__(self, data, name, type_data = 'list_of_lists'):
+    def __init__(self, data: Union[list, pd.DataFrame], name: str, type_data:str='list_of_lists') -> None:
         """Constructor. Receives either a list of lists or a DataFrame and its name
         taken from a user. Type_data parameter corresponds with the type of data received"""
         if type_data == 'list_of_lists':
-            self.main_data=pd.DataFrame({k: v for k,v in zip(data[0],[[data[j][i] for j in range(1,len(data))] for i in range(len(data[0]))])})
+            # self.main_data=pd.DataFrame({k: v for k,v in zip(data[0],[[data[j][i] for j in range(1,len(data))] for i in range(len(data[0]))])})
+            self.main_data=pd.DataFrame(data[1:], columns=data[0])
         elif type_data == 'data_frame':
             self.main_data=data
         self.name=name
 
-    def change_name(self, new_name):
+    def change_name(self, new_name:str) -> None:
         """Method that allows to change the name of your data"""
         assert type(new_name) == str, 'Name must be a string!'
         self.name = new_name
@@ -28,21 +31,21 @@ class My_data_class(object):
         """Printing method. Outputs DataFrame without indexes"""
         return self.main_data.to_string(index=False)
 
-    def get_rows_by_number(self, start, end=0, alter_table=False):
+    def get_rows_by_number(self, start:int, end:int=0, alter_table:bool=False) -> Union[None, pd.DataFrame]:
         """Method for choosing rows the indexes of which are in range start:stop.
         Alter_table parameter allows the user to alter their current data or save results in a separate file"""
         assert 0 < start < len(self.main_data) and ((start <= end <= len(self.main_data)) or end==0), 'Wrong boundaries!'
-        result=self.main_data.iloc[start-1:] if end == 0 else self.main_data.iloc[start:end+1]
+        result=self.main_data.iloc[start:] if end == 0 else self.main_data.iloc[start:end+1]
         if alter_table==True:
             print('The data has been altered!!!')
             self.main_data = result
             print(self)
         if alter_table==False:
-            # ask in a main program whether to save or not
             return result
+            # ask in a main program whether to save or not
             
 
-    def get_rows_by_value(self, *values, alter_table=False):
+    def get_rows_by_value(self, *values, alter_table:bool=False) -> Union[None, pd.DataFrame]:
         """Method for choosing rows the first values of which are *values.
         Alter_table parameter allows the user to alter their current data or save results in a separate file"""
         result=self.main_data.loc[self.main_data[self.main_data.columns[0]].isin(values)]
@@ -51,29 +54,64 @@ class My_data_class(object):
             self.main_data = result 
             print(self)
         if alter_table==False and not result.empty:
-            # ask in a main program whether to save or not
             return result
+            # ask in a main program whether to save or not
         if result.empty:
             raise ValueError('Such values are not found!')
     
-    def get_values(self, column):
-        ...
-    def set_values(self, column, *values):
-        ...
-    def add_line(self, value_string):
-        ...
-    def del_line(self, shoot_number):
-        ...
-    def merge(self, another_table=None):
-        ...
-    def concat(self, another_table=None):
-        ...
-    def split(self, splitter=None):
-        ...
+    def get_values(self, column:str) -> str:
+        """Method for getting values out of a certain column in a DataFrame"""
+        assert type(column)==str, 'Wrong type of value'
+        assert column in self.main_data.columns, 'No such column'
+        return self.main_data.loc[:, column].to_string(index=False)
+
+    def set_values(self, column:str, *values) -> None: 
+        """Method for setting values in a certain column in a DataFrame"""
+        assert type(column)==str, 'Wrong type of value'
+        assert column in self.main_data.columns, 'No such column'
+        assert len(values)>0, 'No values!'
+        for index, value in zip(range(len(values)), values): self.main_data.loc[index, column] = value
+        print('Assignment successful!')
+        print(self)
+
+    def del_line(self, shoot_number:int) -> None:
+        """Method for deleting a row in the DataFrame"""
+        assert 0 < shoot_number < len(self.main_data), 'Wrong row number!'
+        data_after_row_deletion=self.main_data.drop(shoot_number-1)
+        data_after_row_deletion.index=range(len(self.main_data)-1)
+        self.main_data=data_after_row_deletion
+        print('Row deleted successfully!')
+        print(self)
+
+    def merge(self, another_table:My_data_class, true_merge:bool=False, by_number:bool=True) -> My_data_class:
+        """Method for merging two My_data_class objects. If true_merge parameter is True, the objects merge like inner join in sql;
+        otherwise like outer join. If by_number is true, the tables merge on index; if false - on the values of the first column 
+        (in this case first columns of the two tables must be identical)"""
+        if by_number==True:
+            assert any([i in list(another_table.main_data.index) for i in list(self.main_data.index)]), 'Merge is impossible!'
+            merge_res=pd.merge(self.main_data, another_table.main_data, how='outer' if true_merge==False else 'inner', left_index=True, right_index=True)
+        if by_number==False:
+            assert self.main_data.columns[0] == another_table.main_data.columns[0], 'Merge is impossible!'
+            merge_res=pd.merge(self.main_data, another_table.main_data, how='outer' if true_merge==False else 'inner', on=self.main_data.columns[0])
+        return My_data_class(merge_res, self.name+'_*_'+another_table.name, type_data='data_frame')
+    
+    def concat(self, another_table:My_data_class) -> My_data_class:
+        """Method for concetanating two tables aka My_Data_Class objects"""
+        assert all(self.main_data.columns == another_table.main_data.columns), 'Columns do not match!'
+        con_res=pd.concat(self.main_data, another_table.main_data)
+        return My_data_class(con_res, self.name+'_+_'+another_table.name, type_data='data_frame')
+    
+    def split(self, splitter:int=None) -> My_data_class:
+        """Method for splitting a table into two tables with a splitter - index number"""
+        assert 0 < splitter < len(self.main_data), 'Wrong splitter!'
+        split_res1, split_res2 = self.main_data[:splitter+1], self.main_data[splitter+1:]
+        return My_data_class(split_res1, self.name+f'_to_row_{splitter}', type_data='data_frame'), My_data_class(split_res2, self.name+f'_from_row_{splitter}', type_data='data_frame')
+    
+    
     def compare(self, column_1, column_2, symbol):
-        def filter(table, bool_list, alter_table=False):
-            ...
         ...
+    def filter(self, bool_list, alter_table=False):
+            ...
     def column_math(self, column_1, column_2, symbol, alter_table=False):
         ...
 
@@ -81,7 +119,7 @@ class My_data_class(object):
 
 
     @staticmethod
-    def regular_save(data, format, file_name):
+    def regular_save(data:pd.DataFrame, format:str, file_name:str) -> None:
         """The static method saves data into a file.
         Supported formats: csv, pkl, txt"""
         try:
@@ -98,7 +136,7 @@ class My_data_class(object):
             raise ValueError('Invalid file name!')
     
     # main save function
-    def save_table(self, format='csv', max_rows=0):
+    def save_table(self, format:str='csv', max_rows:int=0) -> None:
         """Saves data into a file. Is able to split data into multiple files. 
         Supported formats: csv, txt, pkl"""
         if max_rows < 0:
@@ -118,7 +156,7 @@ class My_data_class(object):
         
     
 
-def data_builder(contents=None):
+def data_builder(contents:list = None) -> My_data_class:
     """The function creates data either from user input or a ready list of lists and converts into an object of My_data_class"""
     data = []
     if contents is not None:
@@ -150,7 +188,7 @@ def data_builder(contents=None):
         except AssertionError as err:
             print(err)
 
-def load_data(file_name, format='csv'):
+def load_data(file_name:str, format:str='csv') -> pd.DataFrame:
     """The function loads data from a file, which name is passed as an argument
     Supported formats: csv, pkl, txt"""
     try:
@@ -168,10 +206,11 @@ def load_data(file_name, format='csv'):
         print('File not found')
         raise
 
-def load_existing_data(*file_names, format='csv'):
+def load_existing_data(*file_names:str, format:str='csv') -> My_data_class:
     """The function loads data from existing files into a Pandas DataFrame.
     It can take unlimited amount of single format files and put it into one data frame
     Supported formats: txt, pkl, csv"""
+    assert all(type(i)=='str' and format in i for i in file_names), ''
     if format == 'txt':
         for number, file in enumerate(file_names):
             transit_data=load_data(file, format)
