@@ -9,6 +9,8 @@ Current capabilities:
 - working with text files
 - creating data on the go
 
+__Version log__:
+
 _Version 0.1_
 - Added function creating data directly in the programm for further use
 
@@ -24,3 +26,6 @@ _Version 0.3_
 _Version 0.4_
 - Added loading function with unlimited amount of single type files loading
 - Added some documentation
+
+_Version 0.5_
+- Added functions get_rows_by_number and get_rows_by_index that output rows of the given DataFrame taking numbers of the rows or values of the first column respectively as an input. Also have options to alter the current data or save result in a separate file
