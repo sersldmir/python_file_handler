@@ -32,6 +32,6 @@ _Version 0.5_
 
 _Version 0.6_
 - Added functions get_values, set_values, del_line, merge, concat, split. More details in their documentations
-- Reworked __init__ for list of lists
+- Reworked __ init __ for list of lists
 - Added annotations
 - Slight changes in other functions
