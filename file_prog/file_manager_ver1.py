@@ -4,7 +4,7 @@ Capabilities:
 - pickling and unpickling files
 - working with text files'''
 
-from typing import Union
+from typing import List, Union
 from __future__ import annotations
 import pandas as pd
 import numpy as np
@@ -94,29 +94,72 @@ class My_data_class(object):
             assert self.main_data.columns[0] == another_table.main_data.columns[0], 'Merge is impossible!'
             merge_res=pd.merge(self.main_data, another_table.main_data, how='outer' if true_merge==False else 'inner', on=self.main_data.columns[0])
         return My_data_class(merge_res, self.name+'_*_'+another_table.name, type_data='data_frame')
+        # ask whether to save in the main program
     
     def concat(self, another_table:My_data_class) -> My_data_class:
         """Method for concetanating two tables aka My_Data_Class objects"""
         assert all(self.main_data.columns == another_table.main_data.columns), 'Columns do not match!'
         con_res=pd.concat(self.main_data, another_table.main_data)
         return My_data_class(con_res, self.name+'_+_'+another_table.name, type_data='data_frame')
+        # ask whether to save in the main program
     
     def split(self, splitter:int=None) -> My_data_class:
         """Method for splitting a table into two tables with a splitter - index number"""
         assert 0 < splitter < len(self.main_data), 'Wrong splitter!'
         split_res1, split_res2 = self.main_data[:splitter+1], self.main_data[splitter+1:]
         return My_data_class(split_res1, self.name+f'_to_row_{splitter}', type_data='data_frame'), My_data_class(split_res2, self.name+f'_from_row_{splitter}', type_data='data_frame')
+        # ask whether to save in the main program
     
-    
-    def compare(self, column_1, column_2, symbol):
-        ...
-    def filter(self, bool_list, alter_table=False):
-            ...
-    def column_math(self, column_1, column_2, symbol, alter_table=False):
-        ...
+    def compare(self, column_1:str, column_2:str, symbol:str) -> Union[list, pd.DataFrame]:
+        """Method for comparing two columns in a My_data_class object. Supported comparions: >, <, ==, !=, <=, >= """
+        assert column_1 in self.main_data.columns and column_2 in self.main_data.columns, 'Wrong columns!'
+        assert symbol in ['==','<=','>=','!=','>','<'], 'Wrong comparison symbol!'
+        transit_data_frame=self.main_data.copy(deep=True)
+        if symbol=='==':
+            bool_series=self.main_data[column_1]==self.main_data[column_2]
+        elif symbol=='<=':
+            bool_series=self.main_data[column_1]<=self.main_data[column_2]
+        elif symbol=='>=':
+            bool_series=self.main_data[column_1]>=self.main_data[column_2]
+        elif symbol=='!=':
+            bool_series=self.main_data[column_1]!=self.main_data[column_2]
+        elif symbol=='>':
+            bool_series=self.main_data[column_1]>self.main_data[column_2]
+        elif symbol=='<':
+            bool_series=self.main_data[column_1]<self.main_data[column_2]
+        transit_data_frame[column_1+'_'+symbol+'_'+column_2]=bool_series
+        return bool_series, transit_data_frame[[column_1, column_2, column_1+'_'+symbol+'_'+column_2]]
+        
 
+    def filter(self, bool_list:List[bool], alter_table:bool=False) -> Union[None, pd.DataFrame]:
+        """Method for getting a DataFrame with a bool list or altering a current My_data_class object"""
+        if alter_table==True:
+            self.main_data=self.main_data.loc[bool_list]
+        else:
+            return self.main_data.loc[bool_list]
+            # ask whether to save in the main program
 
-
+    def column_math(self, column_1:str, column_2:str, symbol:str, alter_table:bool=False) -> Union[None, pd.DataFrame]:
+        """Method for perfoming addition, subtraction, multiplication, division with two columns of the My_data_class object.
+        If alter_table is True, the data will be altered; otherwise a copy will be made"""
+        assert column_1 in self.main_data.columns and column_2 in self.main_data.columns, 'Wrong columns!'
+        assert symbol in ['+', '-', '*', '/'], 'Wrong comparison symbol!'
+        if symbol=='+':
+            operator_res=self.main_data[column_1]+self.main_data[column_2]
+        elif symbol=='-':
+            operator_res=self.main_data[column_1]-self.main_data[column_2]
+        elif symbol=='*':
+            operator_res=self.main_data[column_1]*self.main_data[column_2]
+        elif symbol=='/':
+            operator_res=self.main_data[column_1]/self.main_data[column_2]
+        if alter_table==True:
+            self.main_data[column_1+'_'+symbol+'_'+column_2]=operator_res
+            print(self)
+        else:
+            main_data_copy=self.main_data.copy(deep=True)
+            main_data_copy[column_1+'_'+symbol+'_'+column_2]=operator_res
+            return main_data_copy
+        
 
     @staticmethod
     def regular_save(data:pd.DataFrame, format:str, file_name:str) -> None:

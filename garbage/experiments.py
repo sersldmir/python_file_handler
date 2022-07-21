@@ -13,9 +13,9 @@ exp_lst=[['Name', 'Age', 'Gender', 'Money'],
         ]
 
 exp_lst1=[['Name', 'Age', 'Gender', 'Money'],
-        ['An', 981, 'Femal', 4565],
+        ['An', 98111, 'Femal', 4565],
         ['Jo', 761, 'Mal', 1115],
-        ['Cnt', 1, 'Helicopte', 87],
+        ['Cnt', 100, 'Helicopte', 87],
         ['Dmien', 671, 'Mal', 9058],
         ['Lsa', 6, 'Femal', 7803]
         ]
@@ -50,8 +50,19 @@ exp_df2=pd.DataFrame({k: v for k,v in zip(exp_lst2[0],[[exp_lst2[j][i] for j in 
 exp_df3=pd.DataFrame({k: v for k,v in zip(exp_lst3[0],[[exp_lst3[j][i] for j in range(1,len(exp_lst3))] for i in range(len(exp_lst3[0]))])})
 exp_df4=pd.DataFrame({k: v for k,v in zip(exp_lst4[0],[[exp_lst4[j][i] for j in range(1,len(exp_lst4))] for i in range(len(exp_lst4[0]))])})
 
-exp_df_reworked=pd.DataFrame(exp_lst4[1:], columns=exp_lst4[0])
+exp_df_reworked=pd.DataFrame(exp_lst1[1:], columns=exp_lst1[0])
 print(exp_df_reworked)
+print('\n'*2)
+res=exp_df_reworked.copy(deep=True)
+bool_res=exp_df_reworked['Age'] >= exp_df_reworked['Money']
+res['Age >= Money']=bool_res
+print(res[['Money','Age','Age >= Money']])
+print('\n'*2)
+print(exp_df_reworked.loc[bool_res])
+print('\n'*2)
+print(exp_df_reworked)
+
+
 
 
 # splitter=2
