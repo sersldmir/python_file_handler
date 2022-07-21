@@ -28,4 +28,10 @@ _Version 0.4_
 - Added some documentation
 
 _Version 0.5_
-- Added functions get_rows_by_number and get_rows_by_index that output rows of the given DataFrame taking numbers of the rows or values of the first column respectively as an input. Also have options to alter the current data or save result in a separate file
+- Added functions get_rows_by_number and get_rows_by_value that output rows of the given DataFrame taking numbers of the rows or values of the first column respectively as an input. Also have options to alter the current data or save result in a separate file
+
+_Version 0.6_
+- Added functions get_values, set_values, del_line, merge, concat, split. More details in their documentations
+- Reworked __ init __ for list of lists
+- Added annotations
+- Slight changes in other functions
