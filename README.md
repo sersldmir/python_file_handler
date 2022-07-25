@@ -38,3 +38,9 @@ _Version 0.6_
 
 _Version 0.7_
 - Added functions compare, filter, column_math. More details in their documentations
+
+_Version 1.0_
+- Added menu
+- Some functions reworked
+
+__FIN__
