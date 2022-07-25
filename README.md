@@ -1,7 +1,7 @@
 # python_file_handler
 Made on Linux Ubuntu 22.04
 
-My Python project dedicated to handling csv, pickle and txt files. A simple working tool with the potential of future modifications
+My Python project dedicated to handling csv, pickle and txt files. A rework of my uni beginner project, i.e. improved with Pandas
 
 Current capabilities:
 - working with csv files and perfoming some operations with them (add, divide, subtract, multiply, compare columns; concatenating, splitting and merging) 
@@ -35,3 +35,6 @@ _Version 0.6_
 - Reworked __ init __ for list of lists
 - Added annotations
 - Slight changes in other functions
+
+_Version 0.7_
+- Added functions compare, filter, column_math. More details in their documentations
